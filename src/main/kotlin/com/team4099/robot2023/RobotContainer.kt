@@ -1,6 +1,5 @@
 package com.team4099.robot2023
 
-import com.team4099.robot2023.auto.AutonomousSelector
 import com.team4099.robot2023.commands.drivetrain.ResetGyroYawCommand
 import com.team4099.robot2023.commands.drivetrain.TeleopDriveCommand
 import com.team4099.robot2023.config.ControlBoard
@@ -10,36 +9,13 @@ import com.team4099.robot2023.subsystems.drivetrain.drive.DrivetrainIOReal
 import com.team4099.robot2023.subsystems.drivetrain.drive.DrivetrainIOSim
 import com.team4099.robot2023.subsystems.drivetrain.gyro.GyroIO
 import com.team4099.robot2023.subsystems.drivetrain.gyro.GyroIOPigeon2
-import com.team4099.robot2023.subsystems.elevator.Elevator
-import com.team4099.robot2023.subsystems.elevator.ElevatorIONeo
-import com.team4099.robot2023.subsystems.elevator.ElevatorIOSim
-import com.team4099.robot2023.subsystems.gameboy.GameBoy
-import com.team4099.robot2023.subsystems.gameboy.GameboyIOServer
-import com.team4099.robot2023.subsystems.gameboy.objective.isConeNode
-import com.team4099.robot2023.subsystems.groundintake.GroundIntake
-import com.team4099.robot2023.subsystems.groundintake.GroundIntakeIONeo
-import com.team4099.robot2023.subsystems.groundintake.GroundIntakeIOSim
-import com.team4099.robot2023.subsystems.led.Led
-import com.team4099.robot2023.subsystems.led.LedIO
-import com.team4099.robot2023.subsystems.led.LedIOSim
-import com.team4099.robot2023.subsystems.limelight.LimelightVision
-import com.team4099.robot2023.subsystems.limelight.LimelightVisionIO
-import com.team4099.robot2023.subsystems.manipulator.Manipulator
-import com.team4099.robot2023.subsystems.manipulator.ManipulatorIONeo
-import com.team4099.robot2023.subsystems.manipulator.ManipulatorIOSim
-import com.team4099.robot2023.subsystems.superstructure.Request
-import com.team4099.robot2023.subsystems.superstructure.Superstructure
-import com.team4099.robot2023.subsystems.vision.Vision
-import com.team4099.robot2023.subsystems.vision.camera.CameraIONorthstar
 import com.team4099.robot2023.util.driver.Ryan
 import edu.wpi.first.wpilibj.RobotBase
 import org.team4099.lib.smoothDeadband
 import org.team4099.lib.units.derived.Angle
-import java.util.function.Supplier
 
 object RobotContainer {
   private val drivetrain: Drivetrain
-
 
   init {
     if (RobotBase.isReal()) {
@@ -62,12 +38,6 @@ object RobotContainer {
         drivetrain
       )
   }
-
-
-
-
-
-
 
   fun zeroSteering() {
     drivetrain.zeroSteering()

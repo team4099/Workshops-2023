@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.util.Color
 import edu.wpi.first.wpilibj.util.Color8Bit
 import org.team4099.lib.drivers.BlinkinLedDriver as Blinkin
 
-class LedConstants {
+object LedConstants {
   enum class LEDMode {
     IDLE,
     OUTTAKE,

@@ -97,29 +97,18 @@ object Constants {
     val BACK_RIGHT_MODULE_NAME = "Back Right Wheel"
   }
 
-  // leader is right motor and follower is left
-  object Elevator {
-    const val LEADER_MOTOR_ID = 42
-    const val FOLLOWER_MOTOR_ID = 41
-  }
-
   object Gyro {
     const val PIGEON_2_ID = 1
-  }
-
-  object Manipulator {
-    const val INTAKE_MOTOR_ID = 51
-    const val ARM_MOTOR_ID = 52
   }
 
   object Alert {
     val TABS = arrayOf("Pre-match", "In-match")
   }
 
-  object Intake {
-    const val ROLLER_MOTOR_ID = 32
-    const val ARM_MOTOR_ID = 31
-    const val REV_ENCODER_PORT = 7
+  object ExampleIntake {
+    // fake values
+    const val INTAKE_MOTOR = 50
+    const val ARM_SOLENOID = 2
   }
 
   object Led {
