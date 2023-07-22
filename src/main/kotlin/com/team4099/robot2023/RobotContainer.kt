@@ -1,7 +1,6 @@
 package com.team4099.robot2023
 
 import com.team4099.robot2023.auto.AutonomousSelector
-import com.team4099.robot2023.commands.AutoScoreCommand
 import com.team4099.robot2023.commands.drivetrain.ResetGyroYawCommand
 import com.team4099.robot2023.commands.drivetrain.TeleopDriveCommand
 import com.team4099.robot2023.config.ControlBoard
@@ -40,61 +39,16 @@ import java.util.function.Supplier
 
 object RobotContainer {
   private val drivetrain: Drivetrain
-  private val vision: Vision
-  private val superstructure: Superstructure
-  private val limelight: LimelightVision
 
-  val rumbleState: Boolean
-    get() = superstructure.rumbleState
 
   init {
     if (RobotBase.isReal()) {
       // Real Hardware Implementations
       drivetrain = Drivetrain(GyroIOPigeon2, DrivetrainIOReal)
-      vision =
-        Vision(
-          //          object: CameraIO {}
-          //          CameraIONorthstar("northstar"),
-          CameraIONorthstar("northstar_1"),
-          CameraIONorthstar("northstar_2"),
-          CameraIONorthstar("northstar_3"),
-          //        CameraIONorthstar("right"),
-          //        CameraIONorthstar("backward")
-        )
-      superstructure =
-        Superstructure(
-          Elevator(ElevatorIONeo),
-          GroundIntake(GroundIntakeIONeo),
-          Manipulator(ManipulatorIONeo),
-          Led(object : LedIO {}),
-          GameBoy(GameboyIOServer)
-        )
-      limelight = LimelightVision(object : LimelightVisionIO {})
     } else {
       // Simulation implementations
       drivetrain = Drivetrain(object : GyroIO {}, DrivetrainIOSim)
-      vision =
-        Vision(
-          CameraIONorthstar("northstar_1"),
-          CameraIONorthstar("northstar_2"),
-          CameraIONorthstar("northstar_3"),
-        )
-      superstructure =
-        Superstructure(
-          Elevator(ElevatorIOSim),
-          GroundIntake(GroundIntakeIOSim),
-          Manipulator(ManipulatorIOSim),
-          Led(LedIOSim),
-          GameBoy(GameboyIOServer)
-        )
-      limelight = LimelightVision(object : LimelightVisionIO {})
     }
-
-    vision.setDataInterfaces({ drivetrain.odometryPose }, { drivetrain.addVisionData(it) })
-    drivetrain.elevatorHeightSupplier = Supplier { superstructure.elevatorInputs.elevatorPosition }
-    drivetrain.objectiveSupplier = Supplier { superstructure.objective }
-    limelight.poseSupplier = { drivetrain.odometryPose }
-    limelight.nodeToLookFor = { superstructure.objective }
   }
 
   fun mapDefaultCommands() {
@@ -109,17 +63,11 @@ object RobotContainer {
       )
   }
 
-  fun requestSuperstructureIdle() {
-    superstructure.currentRequest = Request.SuperstructureRequest.Idle()
-  }
 
-  fun zeroArm() {
-    superstructure.groundIntakeZeroArm()
-  }
 
-  fun regenerateProfiles() {
-    superstructure.regenerateProfiles()
-  }
+
+
+
 
   fun zeroSteering() {
     drivetrain.zeroSteering()
@@ -127,7 +75,6 @@ object RobotContainer {
 
   fun zeroSensors() {
     drivetrain.zeroSensors()
-    superstructure.groundIntakeZeroArm()
   }
 
   fun zeroAngle(toAngle: Angle) {
@@ -154,75 +101,11 @@ object RobotContainer {
     //    ControlBoard.autoLevel.whileActiveContinuous(
     //      GoToAngle(drivetrain).andThen(AutoLevel(drivetrain))
     //    )
-
-    ControlBoard.setArmCubeHybridPrep.whileTrue(
-      superstructure.prepScoreCommand(
-        Constants.Universal.GamePiece.CUBE, Constants.Universal.NodeTier.HYBRID
-      )
-    )
-    ControlBoard.setArmCubeMidPrep.whileTrue(
-      superstructure.prepScoreCommand(
-        Constants.Universal.GamePiece.CUBE, Constants.Universal.NodeTier.MID
-      )
-    )
-    ControlBoard.setArmCubeHighPrep.whileTrue(
-      superstructure.prepScoreCommand(
-        Constants.Universal.GamePiece.CUBE, Constants.Universal.NodeTier.HIGH
-      )
-    )
-    ControlBoard.setArmConeHybridPrep.whileTrue(
-      superstructure.prepScoreCommand(
-        Constants.Universal.GamePiece.CONE, Constants.Universal.NodeTier.HYBRID
-      )
-    )
-    ControlBoard.setArmConeMidPrep.whileTrue(
-      superstructure.prepScoreCommand(
-        Constants.Universal.GamePiece.CONE, Constants.Universal.NodeTier.MID
-      )
-    )
-    ControlBoard.setArmConeHighPrep.whileTrue(
-      superstructure.prepScoreCommand(
-        Constants.Universal.GamePiece.CONE, Constants.Universal.NodeTier.HIGH
-      )
-    )
-
-    ControlBoard.goBackToIdle.whileTrue(superstructure.requestIdleCommand())
-    ControlBoard.scoreOuttake.whileTrue(superstructure.score())
-    ControlBoard.singleSubstationIntake.whileTrue(superstructure.singleSubConeCommand())
-    ControlBoard.groundIntakeCube.whileTrue(superstructure.groundIntakeCubeCommand())
-    ControlBoard.doubleSubstationIntake.whileTrue(superstructure.doubleSubConeCommand())
-    ControlBoard.prepScore.whileTrue(
-      superstructure.prepScoreCommand(
-        {
-          if (superstructure.objective.isConeNode()) Constants.Universal.GamePiece.CONE
-          else Constants.Universal.GamePiece.CUBE
-        },
-        { superstructure.objective.nodeTier }
-      )
-    )
-
-    ControlBoard.groundIntakeCone.whileTrue(superstructure.groundIntakeConeCommand())
-    ControlBoard.autoScore.whileTrue(AutoScoreCommand(drivetrain, superstructure))
-
-    ControlBoard.ejectGamePiece.whileTrue(superstructure.ejectGamePieceCommand())
-    //    ControlBoard.dpadDown.whileTrue(PickupFromSubstationCommand(drivetrain, superstructure))
-
-    //    ControlBoard.doubleSubstationIntake.whileTrue(AutoScoreCommand(drivetrain,
-    // superstructure))
-
-    //    ControlBoard.doubleSubstationIntake.whileTrue(
-    //      PickupFromSubstationCommand(
-    //        drivetrain,
-    //        superstructure,
-    //        Constants.Universal.GamePiece.CONE,
-    //        Constants.Universal.Substation.SINGLE_SUBSTATION
-    //      )
-    //    )
   }
 
   fun mapTestControls() {}
 
-  fun getAutonomousCommand() = AutonomousSelector.getCommand(drivetrain, superstructure)
+  fun getAutonomousCommand() {}
 
   fun mapTunableCommands() {}
 }
