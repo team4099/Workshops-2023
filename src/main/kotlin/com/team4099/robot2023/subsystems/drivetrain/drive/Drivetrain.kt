@@ -3,6 +3,7 @@ package com.team4099.robot2023.subsystems.drivetrain.drive
 import com.team4099.lib.hal.Clock
 import com.team4099.robot2023.config.constants.Constants
 import com.team4099.robot2023.config.constants.DrivetrainConstants
+import com.team4099.robot2023.config.constants.VisionConstants
 import com.team4099.robot2023.subsystems.drivetrain.gyro.GyroIO
 import com.team4099.robot2023.subsystems.gameboy.objective.Objective
 import com.team4099.robot2023.util.Alert
@@ -177,18 +178,7 @@ class Drivetrain(val gyroIO: GyroIO, swerveModuleIOs: DrivetrainIO) : SubsystemB
 
     swerveModules.forEach { it.periodic() }
 
-    // Update max setpoint speed based on elevator height
-    if (elevatorHeightSupplier.get() > ElevatorConstants.FIRST_STAGE_HEIGHT) {
-      DrivetrainConstants.DRIVE_SETPOINT_MAX =
-        15.feet.perSecond -
-        10.feet.perSecond *
-        (
-          (elevatorHeightSupplier.get() - ElevatorConstants.FIRST_STAGE_HEIGHT) /
-            (ElevatorConstants.SECOND_STAGE_HEIGHT)
-          )
-    } else {
-      DrivetrainConstants.DRIVE_SETPOINT_MAX = 15.feet.perSecond
-    }
+    DrivetrainConstants.DRIVE_SETPOINT_MAX = 15.feet.perSecond
 
     Logger.getInstance()
       .recordOutput(

@@ -109,8 +109,6 @@ object Robot : LoggedRobot() {
     RobotContainer
     AutonomousSelector
     RobotContainer.mapDefaultCommands()
-    RobotContainer.zeroArm()
-
     // Set the scheduler to log events for command initialize, interrupt, finish
     CommandScheduler.getInstance().onCommandInitialize { command: Command ->
       Logger.getInstance().recordOutput("/ActiveCommands/${command.name}", true)
@@ -125,9 +123,7 @@ object Robot : LoggedRobot() {
     }
   }
 
-  override fun disabledExit() {
-    RobotContainer.regenerateProfiles()
-  }
+  override fun disabledExit() {}
 
   override fun autonomousInit() {
     RobotContainer.zeroSensors()
@@ -141,7 +137,6 @@ object Robot : LoggedRobot() {
     RobotContainer.getAutonomousCommand().cancel()
     RobotContainer.setSteeringCoastMode()
     RobotContainer.setDriveBrakeMode()
-    RobotContainer.requestSuperstructureIdle()
     // autonomousCommand.cancel()
   }
 
@@ -182,7 +177,6 @@ object Robot : LoggedRobot() {
     if (Constants.Tuning.TUNING_MODE) {
       RobotContainer.mapTunableCommands()
     }
-    RobotContainer.zeroArm()
   }
 
   override fun testInit() {
